@@ -1,5 +1,7 @@
 import type { AppProps } from "next/app";
-import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Head from "next/head";
 import { Layout } from "@/components/layout";
 import { theme } from "@/utils/config/theme";
@@ -15,9 +17,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div id="mainDiv" className={`${ottercoFont.variable} `}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </LocalizationProvider>
       </div>
     </ThemeProvider>
   );

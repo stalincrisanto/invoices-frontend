@@ -1,3 +1,4 @@
+import DateTimePicker from "@/components/dateTimePicker";
 import Title from "@/components/title";
 import React from "react";
 
@@ -5,6 +6,7 @@ const FacturasMain = () => {
   return (
     <>
       <Title title="Consulta de facturas" />
+      <DateTimePicker label="Desde"/>
     </>
   );
 };
