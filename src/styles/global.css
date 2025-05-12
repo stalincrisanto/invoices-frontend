@@ -1,0 +1,16 @@
+html,
+body,
+#__next,
+#mainDiv {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  background-color: red;
+}
+
+@font-face {
+  font-family: Otterco;
+  src: url("/fonts/Otterco-Regular.otf");
+  format: ("otf");
+  font-display: swap;
+}
