@@ -2,7 +2,7 @@ import DateTimePicker from "@/components/dateTimePicker";
 import Input from "@/components/input";
 import Title from "@/components/title";
 import ButtonComponent from "@/components/button"; // Importamos el botón genérico
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import { getInvoices } from "@/services/getInvoices";
@@ -75,7 +75,29 @@ const FacturasMain = () => {
 
   return (
     <>
-      <Title title="Consulta de Facturas" />
+      <Typography variant="h1" >h1</Typography>
+      <Typography variant="h2" >h2</Typography>
+      <Typography variant="h3" >h3</Typography>
+      <Typography variant="h4" >h4</Typography>
+      <Typography variant="h5" >h5</Typography>
+      <Typography variant="h6" >h6</Typography>
+      <Typography variant="body1" >Consulta de facturas</Typography>
+      <Typography variant="body2" >Consulta de facturas</Typography>
+      <Typography variant="button" >Consulta de facturas</Typography>
+      <Typography variant="caption" >Consulta de facturas</Typography>
+      <Typography variant="inherit" >Consulta de facturas</Typography>
+      <Typography variant="overline" >Consulta de facturas</Typography>
+      <Typography variant="subtitle1" >Consulta de facturas</Typography>
+      <Typography variant="subtitle2" >Consulta de facturas</Typography>
+      
+    </>
+  );
+};
+
+export default FacturasMain;
+
+{/* <Title title="Consulta de facturas" />
+      <Button color="primary" type="button" variant="contained">Prueba</Button>
       <Box sx={{ position: "relative", zIndex: "10", padding: 2 }}>
         <Grid container spacing={2} sx={{ justifyContent: "space-between" }}>
           <Grid sx={{ width: "30%" }}>
@@ -132,9 +154,4 @@ const FacturasMain = () => {
             )}
           </Box>
         )}
-      </Box>
-    </>
-  );
-};
-
-export default FacturasMain;
+      </Box> */}
