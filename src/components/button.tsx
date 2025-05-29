@@ -15,6 +15,7 @@ const ButtonComponent: React.FC<ButtonProps> = ({ label, onClick, color = "prima
       color={color}
       onClick={onClick}
       sx={{ marginTop: 2, ...sx }}
+      fullWidth={false}
     >
       {label}
     </Button>

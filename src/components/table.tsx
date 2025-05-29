@@ -8,13 +8,14 @@ import {
   Paper,
   IconButton,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DownloadIcon from "@mui/icons-material/Download";
 
 interface Column {
   id: string;
   label: string;
-  render?: (value: any, row: Row) => React.ReactNode; 
+  render?: (value: any, row: Row) => React.ReactNode;
 }
 
 interface Row {
@@ -28,6 +29,20 @@ interface GenericTableProps {
   onDownload: (row: Row) => void;
 }
 
+// Styled components
+const TableHeaderCell = styled(TableCell)`
+  background-color:rgb(215, 220, 224);
+  color: black;
+  font-weight: bold;
+  text-transform: none;
+`;
+
+const ZebraRow = styled(TableRow, {
+  shouldForwardProp: (prop) => prop !== "index",
+})<{ index: number }>(({ index }) => ({
+  backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#e0e0e0",
+}));
+
 const GenericTable = ({ columns, rows, onPreview, onDownload }: GenericTableProps) => {
   return (
     <TableContainer component={Paper} sx={{ marginTop: 4 }}>
@@ -35,14 +50,16 @@ const GenericTable = ({ columns, rows, onPreview, onDownload }: GenericTableProp
         <TableHead>
           <TableRow>
             {columns.map((column) => (
-              <TableCell key={column.id}>{column.label}</TableCell>
+              <TableHeaderCell key={column.id}>
+                {column.label}
+              </TableHeaderCell>
             ))}
-            <TableCell>Acciones</TableCell>
+            <TableHeaderCell>Acciones</TableHeaderCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row, idx) => (
-            <TableRow key={idx}>
+            <ZebraRow key={idx} index={idx}>
               {columns.map((column) => (
                 <TableCell key={column.id}>
                   {column.render
@@ -58,7 +75,7 @@ const GenericTable = ({ columns, rows, onPreview, onDownload }: GenericTableProp
                   <DownloadIcon />
                 </IconButton>
               </TableCell>
-            </TableRow>
+            </ZebraRow>
           ))}
         </TableBody>
       </Table>

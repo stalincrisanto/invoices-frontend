@@ -31,20 +31,24 @@ const theme = createTheme({
   typography: {
     fontFamily: 'Montserrat, sans-serif',
     h1: {
-      fontSize: '2.5rem',
+      fontSize: '1.6rem',
       fontWeight: 700,
       color: '#4678b2',
     },
     h2: {
-      fontSize: '2rem',
+      fontSize: '1.3rem',
+      fontWeight: 600,
+    },
+    h3: {
+      fontSize: '1rem',
       fontWeight: 600,
     },
     h5: {
-      fontSize: '1.3rem',
+      fontSize: '0.9rem',
       color: '#94caf2',
     },
     h6: {
-      fontSize: '0.9rem',
+      fontSize: '0.6rem',
     },
     body1: {
       fontSize: '1rem',

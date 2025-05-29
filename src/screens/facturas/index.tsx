@@ -11,6 +11,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 import GenericTable from "@/components/table";
 import { columnsTable } from "../constants/invoices";
 import { generatePdfInvoice } from "@/services/generatePdfInvoice";
+import { Text } from "@/components/text";
+import { UserIcon } from "@/components/Icons";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const FacturasMain = () => {
   const [documentId, setDocumentId] = useState("");
@@ -75,29 +78,118 @@ const FacturasMain = () => {
 
   return (
     <>
-      <Typography variant="h1" >h1</Typography>
-      <Typography variant="h2" >h2</Typography>
-      <Typography variant="h3" >h3</Typography>
-      <Typography variant="h4" >h4</Typography>
-      <Typography variant="h5" >h5</Typography>
-      <Typography variant="h6" >h6</Typography>
-      <Typography variant="body1" >Consulta de facturas</Typography>
-      <Typography variant="body2" >Consulta de facturas</Typography>
-      <Typography variant="button" >Consulta de facturas</Typography>
-      <Typography variant="caption" >Consulta de facturas</Typography>
-      <Typography variant="inherit" >Consulta de facturas</Typography>
-      <Typography variant="overline" >Consulta de facturas</Typography>
-      <Typography variant="subtitle1" >Consulta de facturas</Typography>
-      <Typography variant="subtitle2" >Consulta de facturas</Typography>
-      
+      <Text variant="h1">Consulta de facturas</Text>
+      <Box sx={{ position: "relative", zIndex: "10", padding: 2 }}>
+        <Grid container spacing={2} sx={{ justifyContent: "space-between" }}>
+          <Grid sx={{ width: "30%" }}>
+            <Input
+              label="Número de cédula"
+              placeholder="Ingrese el número de cédula"
+              value={documentId}
+              onChange={handleCedulaChange}
+            />
+          </Grid>
+          <Grid sx={{ width: "30%" }}>
+            <DateTimePicker
+              label="Desde"
+              value={dateStart}
+              onChange={handleDateStartChange}
+            />
+          </Grid>
+          <Grid sx={{ width: "30%" }}>
+            <DateTimePicker
+              label="Hasta"
+              value={dateEnd}
+              onChange={handleDateEndChange}
+            />
+          </Grid>
+        </Grid>
+
+        <Grid container justifyContent="center" sx={{ marginTop: 2 }}>
+          <ButtonComponent
+            label="Consultar"
+            onClick={handleSubmit}
+            color="primary"
+          />
+        </Grid>
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box sx={{ marginTop: 0, paddingBottom: 8 }}>
+            {invoices.length > 0 ? (
+              <>
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
+                >
+                  {/* <UserIcon color="primary" /> */}
+                  <AccountCircleIcon color="primary" fontSize="large"/>
+                  <Typography variant="h3">
+                    {invoices[0].account_razon}
+                  </Typography>
+                </Box>
+                <GenericTable
+                  columns={columnsTable}
+                  rows={invoices}
+                  onPreview={handlePreview}
+                  onDownload={handleDownload}
+                />
+              </>
+            ) : (
+              <p>No hay facturas para mostrar.</p>
+            )}
+          </Box>
+        )}
+      </Box>
+      {/* <Text variant="h1">Consulta de facturas</Text>
+      <Input
+        label="Número de cédula"
+        placeholder="Ingrese el número de cédula"
+        value={documentId}
+        onChange={handleCedulaChange}
+      />
+      <br />
+      <br />
+      <br />
+      <DateTimePicker
+        label="Desde"
+        value={dateStart}
+        onChange={handleDateStartChange}
+      />
+      <br />
+      <br />
+      <br />
+      <ButtonComponent
+        label="Consultar"
+        onClick={handleSubmit}
+        color="primary"
+      />
+      <br />
+      <br />
+      <br />
+      <Typography variant="h1">h1</Typography>
+      <Typography variant="h2">h2</Typography>
+      <Typography variant="h3">h3</Typography>
+      <Typography variant="h4">h4</Typography>
+      <Typography variant="h5">h5</Typography>
+      <Typography variant="h6">h6</Typography>
+      <Typography variant="body1">Consulta de facturas</Typography>
+      <Typography variant="body2">Consulta de facturas</Typography>
+      <Typography variant="button">Consulta de facturas</Typography>
+      <Typography variant="caption">Consulta de facturas</Typography>
+      <Typography variant="inherit">Consulta de facturas</Typography>
+      <Typography variant="overline">Consulta de facturas</Typography>
+      <Typography variant="subtitle1">Consulta de facturas</Typography>
+      <Typography variant="subtitle2">Consulta de facturas</Typography> */}
     </>
   );
 };
 
 export default FacturasMain;
 
-{/* <Title title="Consulta de facturas" />
-      <Button color="primary" type="button" variant="contained">Prueba</Button>
+{
+  /* <Title title="Consulta de facturas" />
       <Box sx={{ position: "relative", zIndex: "10", padding: 2 }}>
         <Grid container spacing={2} sx={{ justifyContent: "space-between" }}>
           <Grid sx={{ width: "30%" }}>
@@ -154,4 +246,5 @@ export default FacturasMain;
             )}
           </Box>
         )}
-      </Box> */}
+      </Box> */
+}
