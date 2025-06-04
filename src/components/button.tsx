@@ -6,9 +6,16 @@ interface ButtonProps {
   onClick: () => void;
   color?: "primary" | "secondary" | "error" | "warning" | "info" | "success";
   sx?: object;
+  disabled?: boolean;
 }
 
-const ButtonComponent: React.FC<ButtonProps> = ({ label, onClick, color = "primary", sx }) => {
+const ButtonComponent: React.FC<ButtonProps> = ({
+  label,
+  onClick,
+  color = "primary",
+  sx,
+  disabled = false,
+}) => {
   return (
     <Button
       variant="contained"
@@ -16,6 +23,7 @@ const ButtonComponent: React.FC<ButtonProps> = ({ label, onClick, color = "prima
       onClick={onClick}
       sx={{ marginTop: 2, ...sx }}
       fullWidth={false}
+      disabled={disabled}
     >
       {label}
     </Button>

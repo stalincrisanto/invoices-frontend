@@ -13,6 +13,7 @@ import { generatePdfInvoice } from "@/services/generatePdfInvoice";
 import { Text } from "@/components/text";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import CaptchaComponent from "@/components/captcha";
 
 const FacturasMain = () => {
   const [documentId, setDocumentId] = useState("");
@@ -25,6 +26,7 @@ const FacturasMain = () => {
     dateStart: "",
     dateEnd: "",
   });
+  const [captchaValid, setCaptchaValid] = useState(false);
 
   const handleCedulaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -225,12 +227,13 @@ const FacturasMain = () => {
             />
           </Grid>
         </Grid>
-
-        <Grid container justifyContent="center" sx={{ marginTop: 2 }}>
+        <CaptchaComponent onValid={() => setCaptchaValid(true)} />
+        <Grid container justifyContent="end" sx={{ marginTop: -4 }}>
           <ButtonComponent
             label="Consultar"
             onClick={handleSubmit}
             color="primary"
+            disabled={!captchaValid}
           />
         </Grid>
         {loading ? (
