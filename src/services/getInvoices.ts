@@ -3,23 +3,27 @@ export const getInvoices = async ({
   dateStart,
   dateEnd,
 }: Params) => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/invoices?documentId=${documentId}&dateStart=${dateStart}&dateEnd=${dateEnd}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/invoices?documentId=${documentId}&dateStart=${dateStart}&dateEnd=${dateEnd}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Error fetching invoices");
     }
-  );
 
-  if (!response.ok) {
-    throw new Error("Error fetching invoices");
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error in getInvoices:", error);
+    throw error;
   }
-
-  const data = await response.json();
-  return data;
 };
 
 interface Params {

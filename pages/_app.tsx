@@ -6,6 +6,10 @@ import Head from "next/head";
 import theme from "@/styles/theme";
 import Layout from "@/componentsv2/layout/Layout";
 import "@/styles/globals.css";
+import dayjs from "dayjs";
+import "dayjs/locale/es";
+
+dayjs.locale("es");
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -17,7 +21,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <CssBaseline />
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
         <Layout>
           <Component {...pageProps} />
         </Layout>

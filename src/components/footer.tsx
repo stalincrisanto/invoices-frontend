@@ -40,6 +40,7 @@ const Footer = () => {
           }}
           width={450}
           height={50}
+          unoptimized
         />
       </div>
     </>

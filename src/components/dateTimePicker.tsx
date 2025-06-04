@@ -9,14 +9,27 @@ interface Props {
   value: Dayjs | null;
   onChange: (newValue: Dayjs | null) => void;
   errorText?: string;
+  minDate?: Dayjs;
+  maxDate?: Dayjs;
 }
 //TODO:
-// - add styles for focus and hover states
+// - estilos para el evento focus y hover, tiene que ser como el input
 // - al momento de abrir el calendario, la pantalla se agranda
 // - agregar un botón de limpiar los datos
 // - agregar un loader para la generación del pdf
+// - cambiar iconos por lo que nos entregaro
+// - cambiar a español el calendario
+// - agregar notificación de error si hay un problema en el servicio del backend
 
-const DateInput: React.FC<Props> = ({ label, value, onChange, errorText }) => {
+
+const DateInput: React.FC<Props> = ({
+  label,
+  value,
+  onChange,
+  errorText,
+  minDate,
+  maxDate,
+}) => {
   return (
     <Container>
       {label && <CustomLabel>{label}</CustomLabel>}
@@ -24,6 +37,8 @@ const DateInput: React.FC<Props> = ({ label, value, onChange, errorText }) => {
         format="DD-MM-YYYY"
         value={value}
         onChange={onChange}
+        minDate={minDate}
+        maxDate={maxDate}
         slotProps={{
           textField: {
             fullWidth: true,

@@ -30,29 +30,38 @@ interface GenericTableProps {
 }
 
 // Styled components
-const TableHeaderCell = styled(TableCell)`
-  background-color:rgb(215, 220, 224);
-  color: black;
-  font-weight: bold;
-  text-transform: none;
-`;
+const TableHeaderCell = styled(TableCell)(({ theme }) => ({
+  backgroundColor: "#E1E6F7",
+  color: theme.palette.primary.dark,
+  fontWeight: "bold",
+  textTransform: "none",
+  paddingTop: 10,
+  paddingBottom: 10,
+}));
 
 const ZebraRow = styled(TableRow, {
   shouldForwardProp: (prop) => prop !== "index",
 })<{ index: number }>(({ index }) => ({
-  backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#e0e0e0",
+  backgroundColor: index % 2 === 0 ? "#fffff" : "#f8f9fa",
+  "& td": {
+    paddingTop: 1,
+    paddingBottom: 1,
+  },
 }));
 
-const GenericTable = ({ columns, rows, onPreview, onDownload }: GenericTableProps) => {
+const GenericTable = ({
+  columns,
+  rows,
+  onPreview,
+  onDownload,
+}: GenericTableProps) => {
   return (
     <TableContainer component={Paper} sx={{ marginTop: 4 }}>
       <Table>
         <TableHead>
           <TableRow>
             {columns.map((column) => (
-              <TableHeaderCell key={column.id}>
-                {column.label}
-              </TableHeaderCell>
+              <TableHeaderCell key={column.id}>{column.label}</TableHeaderCell>
             ))}
             <TableHeaderCell>Acciones</TableHeaderCell>
           </TableRow>

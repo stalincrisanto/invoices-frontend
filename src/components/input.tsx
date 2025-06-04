@@ -3,6 +3,7 @@ import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material";
 
 // TODO: errors on input
+// quitar la sombre que aparece luego qe se escriba en el input
 interface InputProps {
   type?: string;
   value: string;
