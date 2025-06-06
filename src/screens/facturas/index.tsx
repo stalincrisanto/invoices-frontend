@@ -106,21 +106,6 @@ const FacturasMain = () => {
     setDateEnd(newValue);
   };
 
-  const handleError = (status: number) => {
-    console.log("status", status);
-    switch (status) {
-      case 400:
-        enqueueSnack("Captcha incorrecto", "error");
-        break;
-      case 403:
-        enqueueSnack("El captcha no coincide", "error");
-        break;
-      default:
-        enqueueSnack("Datos obtenidos correctamente");
-        break;
-    }
-  };
-
   const handleSubmit = async () => {
     const newErrors = {
       documentId: "",
@@ -145,14 +130,12 @@ const FacturasMain = () => {
       hasError = true;
     }
 
-    // Si hay errores, los mostramos y no se continúa
     if (hasError) {
       setErrors(newErrors);
       return;
     }
 
     setErrors(newErrors); // Limpiar errores si todo está bien
-
     setLoading(true);
 
     try {
@@ -162,10 +145,45 @@ const FacturasMain = () => {
         dateEnd: dayjs(dateEnd).format("YYYY-MM-DD"),
         captchaText,
       });
-      handleError(invoicesData.status);
-      setInvoices(invoicesData.data.data);
-    } catch (error) {
+
+      // Solo mostrar éxito si realmente fue exitoso
+      if (invoicesData.status >= 200 && invoicesData.status < 300) {
+        enqueueSnack("Datos obtenidos correctamente", "success");
+        setInvoices(invoicesData.data.data);
+      }
+    } catch (error: any) {
       console.error("Error fetching invoices:", error);
+
+      // Manejo de errores mejorado
+      if (error.status) {
+        switch (error.status) {
+          case 400:
+            enqueueSnack("Captcha incorrecto", "error");
+            break;
+          case 403:
+            enqueueSnack("El captcha no coincide", "error");
+            break;
+          case 404:
+            enqueueSnack("No se encontraron facturas", "warning");
+            break;
+          case 429:
+            enqueueSnack("Demasiadas solicitudes, intente más tarde", "error");
+            break;
+          case 500:
+            enqueueSnack("Error interno del servidor", "error");
+            break;
+          case 503:
+            enqueueSnack("Error de conexión con el servidor", "error");
+            break;
+          default:
+            enqueueSnack(
+              `Error: ${error.message || "Error desconocido"}`,
+              "error"
+            );
+        }
+      } else {
+        enqueueSnack("Error desconocido al procesar la solicitud", "error");
+      }
     } finally {
       setLoading(false);
     }

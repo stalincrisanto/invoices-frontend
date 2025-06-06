@@ -3,12 +3,14 @@ import { Box, IconButton, Tooltip } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import Input from "./input";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { useSnack } from "@/hooks/useSnack";
 
 interface CaptchaProps {
   onChange: (value: string) => void;
 }
 
 const Captcha = ({ onChange }: CaptchaProps) => {
+  const { enqueueSnack } = useSnack();
   const [captchaText, setCaptchaText] = useState<string>("");
   const [captchaImage, setCaptchaImage] = useState("");
   const captchaRef = useRef(null);
@@ -18,10 +20,16 @@ const Captcha = ({ onChange }: CaptchaProps) => {
   }, []);
 
   const refreshCaptcha = async () => {
-    const captcha = await generateCaptcha();
-    setCaptchaText("");
-    setCaptchaImage(captcha.captchaImage);
-    onChange("");
+    try {
+      const captcha = await generateCaptcha();
+      setCaptchaText("");
+      setCaptchaImage(captcha.captchaImage);
+      onChange("");
+    } catch (error: any) {
+      if (error.status === 429) {
+        enqueueSnack("Demasiadas solicitudes, reintente más tarde", "error");
+      }
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

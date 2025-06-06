@@ -11,10 +11,16 @@ export const generateCaptcha = async (): Promise<CaptchaResponse> => {
       }
     );
 
+    if(!response.ok) {
+      throw {
+        status: response.status,
+        data: null
+      };;
+    }
+
     const { data } = await response.json();
     return data;
   } catch (error) {
-    console.error("Error al generar el captcha", error);
     throw error;
   }
 };
