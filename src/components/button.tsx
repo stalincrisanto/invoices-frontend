@@ -7,6 +7,7 @@ interface ButtonProps {
   color?: "primary" | "secondary" | "error" | "warning" | "info" | "success";
   sx?: object;
   disabled?: boolean;
+  size?: "small" | "medium" | "large";
 }
 
 const ButtonComponent: React.FC<ButtonProps> = ({
@@ -15,6 +16,7 @@ const ButtonComponent: React.FC<ButtonProps> = ({
   color = "primary",
   sx,
   disabled = false,
+  size = "medium",
 }) => {
   return (
     <Button
@@ -24,6 +26,7 @@ const ButtonComponent: React.FC<ButtonProps> = ({
       sx={{ marginTop: 2, ...sx }}
       fullWidth={false}
       disabled={disabled}
+      size={size}
     >
       {label}
     </Button>

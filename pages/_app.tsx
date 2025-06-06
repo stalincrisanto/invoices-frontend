@@ -8,6 +8,7 @@ import Layout from "@/componentsv2/layout/Layout";
 import "@/styles/globals.css";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
+import { SnackbarProvider } from "notistack";
 
 dayjs.locale("es");
 
@@ -21,11 +22,13 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <CssBaseline />
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </LocalizationProvider>
+      <SnackbarProvider maxSnack={3}>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </LocalizationProvider>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }

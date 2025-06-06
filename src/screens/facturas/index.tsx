@@ -13,9 +13,11 @@ import { generatePdfInvoice } from "@/services/generatePdfInvoice";
 import { Text } from "@/components/text";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import CaptchaComponent from "@/components/captcha";
+import Captcha from "@/components/captcha";
+import { useSnack } from "@/hooks/useSnack";
 
 const FacturasMain = () => {
+  const { enqueueSnack } = useSnack();
   const [documentId, setDocumentId] = useState("");
   const [dateStart, setDateStart] = useState<dayjs.Dayjs | null>(null);
   const [dateEnd, setDateEnd] = useState<dayjs.Dayjs | null>(null);
@@ -26,7 +28,7 @@ const FacturasMain = () => {
     dateStart: "",
     dateEnd: "",
   });
-  const [captchaValid, setCaptchaValid] = useState(false);
+  const [captchaText, setCaptchaText] = useState<string>("");
 
   const handleCedulaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -104,6 +106,21 @@ const FacturasMain = () => {
     setDateEnd(newValue);
   };
 
+  const handleError = (status: number) => {
+    console.log("status", status);
+    switch (status) {
+      case 400:
+        enqueueSnack("Captcha incorrecto", "error");
+        break;
+      case 403:
+        enqueueSnack("El captcha no coincide", "error");
+        break;
+      default:
+        enqueueSnack("Datos obtenidos correctamente");
+        break;
+    }
+  };
+
   const handleSubmit = async () => {
     const newErrors = {
       documentId: "",
@@ -143,8 +160,10 @@ const FacturasMain = () => {
         documentId,
         dateStart: dayjs(dateStart).format("YYYY-MM-DD"),
         dateEnd: dayjs(dateEnd).format("YYYY-MM-DD"),
+        captchaText,
       });
-      setInvoices(invoicesData.data);
+      handleError(invoicesData.status);
+      setInvoices(invoicesData.data.data);
     } catch (error) {
       console.error("Error fetching invoices:", error);
     } finally {
@@ -176,6 +195,10 @@ const FacturasMain = () => {
     } catch (error) {
       console.error("Error al descargar la factura:", error);
     }
+  };
+
+  const handleCaptchaText = (value: string) => {
+    setCaptchaText(value);
   };
 
   return (
@@ -227,13 +250,16 @@ const FacturasMain = () => {
             />
           </Grid>
         </Grid>
-        <CaptchaComponent onValid={() => setCaptchaValid(true)} />
-        <Grid container justifyContent="end" sx={{ marginTop: -4 }}>
+        <Grid container justifyContent="space-between" mt={3}>
+          <Captcha onChange={handleCaptchaText} />
+        </Grid>
+        <Grid container justifyContent="end">
           <ButtonComponent
             label="Consultar"
             onClick={handleSubmit}
             color="primary"
-            disabled={!captchaValid}
+            size="small"
+            // disabled={!captchaValid}
           />
         </Grid>
         {loading ? (
@@ -260,7 +286,10 @@ const FacturasMain = () => {
                 />
               </>
             ) : (
-              <p>No hay facturas para mostrar.</p>
+              <>
+                <br />
+                <p>No hay facturas para mostrar.</p>
+              </>
             )}
           </Box>
         )}

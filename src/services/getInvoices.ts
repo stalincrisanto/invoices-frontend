@@ -2,27 +2,24 @@ export const getInvoices = async ({
   documentId,
   dateStart,
   dateEnd,
+  captchaText,
 }: Params) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/invoices?documentId=${documentId}&dateStart=${dateStart}&dateEnd=${dateEnd}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/invoices?documentId=${documentId}&dateStart=${dateStart}&dateEnd=${dateEnd}&captchaText=${captchaText}`,
       {
         method: "GET",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Error fetching invoices");
-    }
-
     const data = await response.json();
-    return data;
+    return { data, status: response.status };
   } catch (error) {
-    console.error("Error in getInvoices:", error);
-    throw error;
+    return { data: [], status: 500 };
   }
 };
 
@@ -30,4 +27,5 @@ interface Params {
   documentId: string;
   dateStart: string;
   dateEnd: string;
+  captchaText: string;
 }

@@ -1,86 +1,73 @@
-import React, { useState, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
+import { generateCaptcha } from "@/services/generateCaptcha";
+import { Box, IconButton, Tooltip } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
 import Input from "./input";
-import ButtonComponent from "./button";
-import { Box } from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
-// Import dinámico para evitar SSR
-const LoadCanvasTemplate = dynamic(
-  () => import("react-simple-captcha").then((mod) => mod.LoadCanvasTemplate),
-  { ssr: false }
-);
+interface CaptchaProps {
+  onChange: (value: string) => void;
+}
 
-export default function CaptchaComponent({ onValid }: { onValid: () => void }) {
-  const [userInput, setUserInput] = useState("");
-  const [valid, setValid] = useState(false);
-  const [captchaReady, setCaptchaReady] = useState(false);
-  const canvasContainerRef = useRef<HTMLDivElement>(null);
+const Captcha = ({ onChange }: CaptchaProps) => {
+  const [captchaText, setCaptchaText] = useState<string>("");
+  const [captchaImage, setCaptchaImage] = useState("");
+  const captchaRef = useRef(null);
 
   useEffect(() => {
-    if (captchaReady) {
-      const { loadCaptchaEnginge } = require("react-simple-captcha");
-      loadCaptchaEnginge(6);
-    }
-  }, [captchaReady]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (canvasContainerRef.current?.querySelector("canvas") !== null) {
-        setCaptchaReady(true);
-      }
-    }, 100);
-
-    return () => clearTimeout(timer);
+    refreshCaptcha();
   }, []);
 
-  const validateCaptcha = () => {
-    const { validateCaptcha } = require("react-simple-captcha");
-    if (validateCaptcha(userInput)) {
-      setValid(true);
-      onValid();
-      // alert("CAPTCHA válido");
-    } else {
-      setValid(false);
-      alert("CAPTCHA incorrecto");
-    }
+  const refreshCaptcha = async () => {
+    const captcha = await generateCaptcha();
+    setCaptchaText("");
+    setCaptchaImage(captcha.captchaImage);
+    onChange("");
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setCaptchaText(value);
+    onChange(value);
   };
 
   return (
-  <div ref={canvasContainerRef}>
-    <Box
-      width={"45%"}
-      sx={{
-        marginTop: 5,
-        display: "flex",
-        flexDirection: "column", // columna principal
-        alignItems: "flex-start",
-        gap: 2, // espacio vertical entre filas
-      }}
-    >
-      {/* Contenedor para input + imagen */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
+    <>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <Input
           type="text"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          placeholder="Digita el código de la imagen"
-          sx={{ flexGrow: 1 }} // input ocupa espacio restante
+          value={captchaText}
+          onChange={handleChange}
+          placeholder="Ej: X8T2P"
+          sx={{ maxWidth: 300 }}
+          label="Ingrese el código de la imagen"
         />
-        <Box sx={{ marginLeft: "auto", ml: 2 }}>
-          <LoadCanvasTemplate />
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <Box
+            dangerouslySetInnerHTML={{ __html: captchaImage }}
+            ref={captchaRef}
+            sx={{
+              border: "1px solid #ccc",
+              padding: 1,
+              display: "inline-block",
+              minWidth: 100,
+              textAlign: "center",
+            }}
+          />
+          <Tooltip title="Refrescar captcha">
+            <IconButton onClick={refreshCaptcha} aria-label="Refrescar captcha">
+              <RefreshIcon />
+            </IconButton>
+          </Tooltip>
         </Box>
       </Box>
+    </>
+  );
+};
 
-      {/* Botón debajo, alineado a la izquierda */}
-      <ButtonComponent onClick={validateCaptcha} label="Validar" color="secondary"/>
-    </Box>
-  </div>
-);
-}
+export default Captcha;
