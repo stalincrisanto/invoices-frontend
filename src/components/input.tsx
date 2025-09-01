@@ -1,6 +1,6 @@
 import React from "react";
 import TextField from "@mui/material/TextField";
-import { styled } from "@mui/material";
+import { styled, useTheme, useMediaQuery } from "@mui/material";
 
 // TODO: errors on input
 // quitar la sombre que aparece luego qe se escriba en el input
@@ -14,6 +14,7 @@ interface InputProps {
   label?: string;
   sx?: object;
   errorText?: string;
+  fullWidth?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -26,7 +27,11 @@ const Input: React.FC<InputProps> = ({
   label = "",
   sx = {},
   errorText = "",
+  fullWidth = true,
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   return (
     <Container className={className} style={{ ...sx }}>
       {label && <CustomLabel>{label}</CustomLabel>}
@@ -36,31 +41,42 @@ const Input: React.FC<InputProps> = ({
         onChange={onChange}
         placeholder={placeholder}
         disabled={disabled}
-        fullWidth
+        fullWidth={fullWidth}
         error={!!errorText}
         variant="outlined"
+        size={"small"}
       />
       {errorText && <ErrorText>{errorText}</ErrorText>}
     </Container>
   );
 };
 
-const Container = styled("div")({
+const Container = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   width: "100%",
-});
+  [theme.breakpoints.down('sm')]: {
+    marginBottom: theme.spacing(1),
+  },
+}));
 
 const CustomLabel = styled("label")(({ theme }) => ({
   fontSize: "0.75rem",
   fontWeight: 450,
   color: theme.palette.primary.main,
   marginBottom: "4px",
+  [theme.breakpoints.down('sm')]: {
+    fontSize: "0.7rem",
+  },
 }));
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   "& .MuiOutlinedInput-root": {
-    height: 40,
+    height: "auto",
+    minHeight: 40,
+    [theme.breakpoints.down('sm')]: {
+      minHeight: 36,
+    },
     "& fieldset": {
       borderColor: "#b5b5b5",
     },
@@ -75,9 +91,18 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   "& input": {
     color: theme.palette.text.primary,
     fontSize: "15px",
+    [theme.breakpoints.down('sm')]: {
+      fontSize: "14px",
+      padding: "8px 12px",
+    },
   },
   "& .MuiInputLabel-root": {
     display: "none",
+  },
+  "& .MuiOutlinedInput-input": {
+    [theme.breakpoints.down('sm')]: {
+      padding: "8px 12px",
+    },
   },
 }));
 
@@ -86,6 +111,10 @@ const ErrorText = styled("p")(({ theme }) => ({
   marginTop: 4,
   paddingInline: 4,
   color: theme.palette.error.main,
+  [theme.breakpoints.down('sm')]: {
+    fontSize: "11px",
+    marginTop: 2,
+  },
 }));
 
 export default Input;

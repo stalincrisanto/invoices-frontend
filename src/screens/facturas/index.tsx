@@ -1,7 +1,7 @@
 import DateTimePicker from "@/components/dateTimePicker";
 import Input from "@/components/input";
 import ButtonComponent from "@/components/button";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, useTheme, useMediaQuery } from "@mui/material";
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import { getInvoices } from "@/services/getInvoices";
@@ -29,6 +29,10 @@ const FacturasMain = () => {
     dateEnd: "",
   });
   const [captchaText, setCaptchaText] = useState<string>("");
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleCedulaChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -221,7 +225,16 @@ const FacturasMain = () => {
 
   return (
     <>
-      <Box display={"flex"} justifyContent={"space-between"}>
+      <Box 
+        display="flex" 
+        justifyContent="space-between" 
+        alignItems="center"
+        sx={{
+          flexDirection: isMobile ? 'column' : 'row',
+          gap: isMobile ? 2 : 0,
+          mb: isMobile ? 2 : 0
+        }}
+      >
         <Text variant="h1">Consulta de facturas</Text>
         <LogoutIcon
           onClick={() => {
@@ -230,8 +243,8 @@ const FacturasMain = () => {
           sx={{
             background: "#79ACD9",
             borderRadius: "50%",
-            width: "35px",
-            height: "35px",
+            width: isMobile ? "30px" : "35px",
+            height: isMobile ? "30px" : "35px",
             padding: "5px",
             "&:hover": {
               backgroundColor: "#4178B8",
@@ -239,9 +252,18 @@ const FacturasMain = () => {
           }}
         />
       </Box>
-      <Box sx={{ position: "relative", zIndex: "10", padding: 2 }}>
-        <Grid container spacing={2} sx={{ justifyContent: "space-between" }}>
-          <Grid sx={{ width: "30%" }}>
+      <Box sx={{ position: "relative", zIndex: "10", padding: isMobile ? 1 : 2 }}>
+        <Box 
+          sx={{ 
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              md: 'repeat(3, 1fr)'
+            },
+            gap: 2
+          }}
+        >
+          <Box>
             <Input
               label="Número de cédula"
               placeholder="Ingrese el número de cédula"
@@ -249,8 +271,8 @@ const FacturasMain = () => {
               onChange={handleCedulaChange}
               errorText={errors.documentId}
             />
-          </Grid>
-          <Grid sx={{ width: "30%" }}>
+          </Box>
+          <Box>
             <DateTimePicker
               label="Desde"
               value={dateStart}
@@ -258,41 +280,75 @@ const FacturasMain = () => {
               maxDate={dayjs()}
               errorText={errors.dateStart}
             />
-          </Grid>
-          <Grid sx={{ width: "30%" }}>
+          </Box>
+          <Box>
             <DateTimePicker
               label="Hasta"
               value={dateEnd}
               onChange={handleDateEndChange}
               errorText={errors.dateEnd}
             />
-          </Grid>
-        </Grid>
-        <Grid container justifyContent="space-between" mt={3}>
-          <Captcha onChange={handleCaptchaText} />
-        </Grid>
-        <Grid container justifyContent="end">
-          <ButtonComponent
-            label="Consultar"
-            onClick={handleSubmit}
-            color="primary"
-            size="small"
-            // disabled={!captchaValid}
-          />
-        </Grid>
+          </Box>
+        </Box>
+        
+        <Box 
+          sx={{ 
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              md: '2fr 1fr'
+            },
+            gap: 2,
+            mt: 3
+          }}
+        >
+          <Box>
+            <Captcha onChange={handleCaptchaText} />
+          </Box>
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              justifyContent: isMobile ? 'center' : 'flex-end',
+              mt: isMobile ? 2 : 0
+            }}
+          >
+            <Box sx={{ width: isMobile ? '100%' : 'auto' }}>
+              <ButtonComponent
+                label="Consultar"
+                onClick={handleSubmit}
+                color="primary"
+                size={isMobile ? "small" : "medium"}
+              />
+            </Box>
+          </Box>
+        </Box>
+
         {loading ? (
           <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
             <CircularProgress />
           </Box>
         ) : (
-          <Box sx={{ marginTop: 0, paddingBottom: 8 }}>
+          <Box sx={{ marginTop: 2, paddingBottom: isMobile ? 4 : 8 }}>
             {invoices.length > 0 ? (
               <>
                 <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}
+                  sx={{ 
+                    display: "flex", 
+                    alignItems: "center", 
+                    gap: 1, 
+                    mb: 2,
+                    flexDirection: isMobile ? 'column' : 'row',
+                    textAlign: isMobile ? 'center' : 'left'
+                  }}
                 >
-                  <AccountCircleIcon color="primary" fontSize="large" />
-                  <Typography variant="h3">
+                  <AccountCircleIcon 
+                    color="primary" 
+                    fontSize={isMobile ? "medium" : "large"} 
+                  />
+                  <Typography 
+                    variant={isMobile ? "h4" : "h3"}
+                    sx={{ wordBreak: 'break-word' }}
+                  >
                     {invoices[0].account_razon}
                   </Typography>
                 </Box>
@@ -304,10 +360,11 @@ const FacturasMain = () => {
                 />
               </>
             ) : (
-              <>
-                <br />
-                <p>No hay facturas para mostrar.</p>
-              </>
+              <Box sx={{ textAlign: 'center', mt: 4 }}>
+                <Typography variant="body1">
+                  No hay facturas para mostrar.
+                </Typography>
+              </Box>
             )}
           </Box>
         )}

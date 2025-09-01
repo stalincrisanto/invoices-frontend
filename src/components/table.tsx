@@ -7,6 +7,10 @@ import {
   TableRow,
   Paper,
   IconButton,
+  useMediaQuery,
+  useTheme,
+  Box,
+  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -37,16 +41,32 @@ const TableHeaderCell = styled(TableCell)(({ theme }) => ({
   textTransform: "none",
   paddingTop: 10,
   paddingBottom: 10,
+  [theme.breakpoints.down('sm')]: {
+    padding: '8px 4px',
+    fontSize: '0.875rem',
+  },
 }));
 
 const ZebraRow = styled(TableRow, {
   shouldForwardProp: (prop) => prop !== "index",
-})<{ index: number }>(({ index }) => ({
+})<{ index: number }>(({ index, theme }) => ({
   backgroundColor: index % 2 === 0 ? "#fffff" : "#f8f9fa",
   "& td": {
     paddingTop: 1,
     paddingBottom: 1,
+    [theme.breakpoints.down('sm')]: {
+      padding: '8px 4px',
+      fontSize: '0.875rem',
+    },
   },
+}));
+
+const MobileCard = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+  backgroundColor: '#fff',
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[1],
 }));
 
 const GenericTable = ({
@@ -55,8 +75,51 @@ const GenericTable = ({
   onPreview,
   onDownload,
 }: GenericTableProps) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  if (isMobile) {
+    return (
+      <Box sx={{ mt: 4 }}>
+        {rows.map((row, idx) => (
+          <MobileCard key={idx}>
+            {columns.map((column) => (
+              <Box key={column.id} sx={{ mb: 1 }}>
+                <Typography variant="caption" color="textSecondary">
+                  {column.label}:
+                </Typography>
+                <Typography>
+                  {column.render
+                    ? column.render(row[column.id], row)
+                    : row[column.id]}
+                </Typography>
+              </Box>
+            ))}
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+              <IconButton onClick={() => onPreview(row)} color="primary" size="small">
+                <VisibilityIcon />
+              </IconButton>
+              <IconButton onClick={() => onDownload(row)} color="primary" size="small">
+                <DownloadIcon />
+              </IconButton>
+            </Box>
+          </MobileCard>
+        ))}
+      </Box>
+    );
+  }
+
   return (
-    <TableContainer component={Paper} sx={{ marginTop: 4 }}>
+    <TableContainer 
+      component={Paper} 
+      sx={{ 
+        marginTop: 4,
+        overflowX: 'auto',
+        '& .MuiTable-root': {
+          minWidth: 650,
+        }
+      }}
+    >
       <Table>
         <TableHead>
           <TableRow>

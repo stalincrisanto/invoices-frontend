@@ -46,8 +46,9 @@ const Captcha = ({ onChange }: CaptchaProps) => {
           value={captchaText}
           onChange={handleChange}
           placeholder="Ej: X8T2P"
-          sx={{ maxWidth: 300 }}
+          sx={{ maxWidth: 340 }}
           label="Ingrese el código de la imagen"
+          // fullWidth
         />
         <Box
           sx={{
